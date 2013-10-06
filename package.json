@@ -1,0 +1,37 @@
+{
+  "name": "infozip",
+  "version": "0.0.1",
+  "description": "Wrapper for the `unzip` and `zip` binaries",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/saschagehlich/infozip"
+  },
+  "keywords": [
+    "zip",
+    "unzip",
+    "linux",
+    "unix",
+    "wrapper",
+    "compress",
+    "decompress"
+  ],
+  "author": "Sascha Gehlich <sascha@gehlich.us>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/saschagehlich/infozip/issues"
+  },
+  "devDependencies": {
+    "should": "~1.3.0",
+    "mocha": "~1.13.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "should": "~1.3.0"
+  }
+}
