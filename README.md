@@ -20,7 +20,10 @@ var InfoZip = require('infozip')
      */
   });
 
-  zip.extractTo(__dirname + '/extracted', ['hello.txt'], function (err) {
+  var options = {
+    junkPaths: false
+  };
+  zip.extractTo(__dirname + '/extracted', ['hello.txt'], options, function (err) {
     if (err) throw err;
 
     /**

@@ -1,4 +1,5 @@
-var exec = require('child_process').exec
+var spawn = require('child_process').spawn
+  , exec  = require('child_process').exec
   , Entry = require('./lib/entry');
 
 function ZipInfo(file, options) {
@@ -57,32 +58,46 @@ ZipInfo.prototype.read = function(callback) {
     });
 };
 
-ZipInfo.prototype.extractTo = function(path, entries, callback) {
-  var entryNames, command;
+ZipInfo.prototype.extractTo = function(path, entries, options, callback) {
+  var entryNames, command, proc, params
+    , stderr = ''
+    , self = this;
 
-  // Entries are optional
-  if (typeof entries === 'function') {
-    callback = entries;
-    entries = null;
-  }
+  if (!options) options = {};
 
   // Get the entries' `name` properties
   if (entries) {
     entryNames = entries.map(function (entry) {
-      return entry.name;
+      if (entry instanceof Entry) {
+        return entry.name;
+      } else if (typeof entry === 'string') {
+        return entry;
+      }
     });
   } else {
     entryNames = [];
   }
 
   // Extract
-  command = this.options.unzip + ' -o ' + this.file + ' ' + entryNames.join(' ') + ' -d ' + path;
-  exec(command,
-    function (err, stdout, stderr) {
-      if (err) return callback(err);
+  params = []
 
-      callback();
-    });
+  if (options.junkPaths) params.push('-j'); // -j  junk paths (do not make directories)
+  if (options.freshenFiles) params.push('-f'); // -f  freshen existing files, create none
+  if (options.noOverwrite) params.push('-n'); // -n  never overwrite existing files
+
+  params = params.concat(['-o', this.file]);
+  params = params.concat(entryNames);
+  params = params.concat(['-d', path]);
+
+  proc = spawn(this.options.unzip, params);
+  proc.stderr.on('data', function (data) {
+    stderr += data.toString();
+  });
+  proc.on('exit', function (exitCode) {
+    if (exitCode !== 0) return callback(new Error('`' + self.options.unzip + '` exited with code ' + exitCode + ': ' + stderr));
+
+    callback();
+  });
 };
 
 module.exports = ZipInfo;

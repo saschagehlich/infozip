@@ -39,7 +39,7 @@ describe('unzip#extractTo', function () {
       var zip = new ZipInfo(path.resolve(__dirname, 'files/test.zip'))
         , extractedPath = path.resolve(__dirname, 'extracted');
 
-      zip.extractTo(extractedPath, function (err) {
+      zip.extractTo(extractedPath, null, null, function (err) {
         if (err) throw err;
 
         fs.existsSync(path.resolve(extractedPath, 'hello.txt')).should.be.true;
@@ -55,10 +55,26 @@ describe('unzip#extractTo', function () {
       var zip = new ZipInfo(path.resolve(__dirname, 'files/test.zip'))
         , extractedPath = path.resolve(__dirname, 'extracted');
 
-      zip.extractTo(extractedPath, ['hello.txt'], function (err) {
+      zip.extractTo(extractedPath, ['hello.txt'], null, function (err) {
         if (err) throw err;
 
         fs.existsSync(path.resolve(extractedPath, 'hello.txt')).should.be.true;
+
+        done();
+      });
+    });
+
+    it('should not create directories if `junkPaths` option is set to true', function (done) {
+      var zip = new ZipInfo(path.resolve(__dirname, 'files/test.zip'))
+        , extractedPath = path.resolve(__dirname, 'extracted')
+        , options = {
+          junkPaths: true
+        };
+
+      zip.extractTo(extractedPath, ['test/test.txt'], options, function (err) {
+        if (err) throw err;
+
+        fs.existsSync(path.resolve(extractedPath, 'test.txt')).should.be.true;
 
         done();
       });

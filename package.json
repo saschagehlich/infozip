@@ -1,6 +1,6 @@
 {
   "name": "infozip",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Wrapper for the `unzip` and `zip` binaries",
   "main": "index.js",
   "scripts": {
